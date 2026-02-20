@@ -1,0 +1,91 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  min-height: 100vh;
+  color: white;
+}
+
+.hero {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  opacity: 0.8;
+  margin-bottom: 30px;
+}
+
+.search-box {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.search-box input {
+  padding: 12px;
+  width: 300px;
+  border-radius: 30px;
+  border: none;
+  outline: none;
+}
+
+.search-box button {
+  padding: 12px 25px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  background: #ff6b6b;
+  color: white;
+  font-weight: bold;
+  transition: 0.3s ease;
+}
+
+.search-box button:hover {
+  background: #ff3b3b;
+  transform: scale(1.05);
+}
+
+.dashboard {
+  padding: 40px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.card, .chart-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.price-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.price-info div {
+  text-align: center;
+}
+
+.price-info h3 {
+  font-size: 1.5rem;
+  margin-top: 5px;
+}
+
+.hidden {
+  display: none;
+}
