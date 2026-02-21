@@ -1,157 +1,116 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+let chart;
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Inter', sans-serif;
+function extractNameFromLink(link) {
+  try {
+    const url = new URL(link);
+    const pathParts = url.pathname.split("/").filter(Boolean);
+    const lastPart = pathParts[pathParts.length - 1];
+    return lastPart.replace(/-/g, " ").substring(0, 50);
+  } catch {
+    return null;
+  }
 }
 
-body {
-  background: #0f172a;
-  color: white;
-  min-height: 100vh;
-}
+function handleProduct() {
 
-/* HERO */
-.hero {
-  text-align: center;
-  padding: 80px 20px 40px;
-}
+  const nameInput = document.getElementById("productNameInput").value.trim();
+  const linkInput = document.getElementById("productLinkInput").value.trim();
 
-.hero h1 {
-  font-size: 3rem;
-  font-weight: 700;
-  background: linear-gradient(to right, #38bdf8, #6366f1);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+  if (!nameInput && !linkInput) {
+    alert("Please enter either product name or product link.");
+    return;
+  }
 
-.hero p {
-  margin-top: 10px;
-  opacity: 0.7;
-}
+  const productName =
+    nameInput || extractNameFromLink(linkInput) || "Product";
 
-.input-group {
-  margin-top: 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  align-items: center;
-}
+  document.getElementById("productTitle").innerText = productName;
 
-.input-group input {
-  width: 350px;
-  padding: 14px;
-  border-radius: 12px;
-  border: 1px solid #334155;
-  background: #1e293b;
-  color: white;
-  font-size: 0.9rem;
-}
+  let platform = "Direct Search";
+  if (linkInput.toLowerCase().includes("amazon")) {
+    platform = "Amazon";
+  } else if (linkInput.toLowerCase().includes("flipkart")) {
+    platform = "Flipkart";
+  }
 
-.input-group input:focus {
-  border-color: #6366f1;
-  outline: none;
-}
+  document.getElementById("platformTag").innerText = platform;
 
-.input-group button {
-  width: 350px;
-  padding: 14px;
-  border-radius: 12px;
-  border: none;
-  background: linear-gradient(to right, #6366f1, #8b5cf6);
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s;
-}
+  const img = document.getElementById("productImage");
+  img.src = "https://via.placeholder.com/300x300.png?text=Product+Preview";
+  img.style.display = "block";
 
-.input-group button:hover {
-  transform: translateY(-2px);
-}
+  document.getElementById("previewSection").classList.remove("hidden");
 
-/* PREVIEW */
-.preview {
-  display: flex;
-  justify-content: center;
-  padding: 50px 20px;
-}
+  const currentPrice = Math.floor(Math.random() * 5000) + 1000;
 
-.preview-card {
-  display: flex;
-  gap: 40px;
-  align-items: center;
-  background: #1e293b;
-  padding: 40px;
-  border-radius: 20px;
-  width: 750px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-}
+  const prices = [];
+  const dates = [];
 
-.preview-card img {
-  width: 220px;
-  height: 220px;
-  object-fit: cover;
-  border-radius: 16px;
-  background: white;
-}
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
 
-.preview-details h2 {
-  font-size: 1.6rem;
-  margin-bottom: 15px;
-}
+    const formattedDate = d.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric"
+    });
 
-#platformTag {
-  padding: 8px 14px;
-  background: linear-gradient(to right, #6366f1, #8b5cf6);
-  border-radius: 25px;
-  font-size: 0.85rem;
-}
+    dates.push(formattedDate);
 
-/* DASHBOARD */
-.dashboard {
-  max-width: 900px;
-  margin: auto;
-  padding: 20px;
-}
+    const variation = Math.floor(Math.random() * 400 - 200);
+    prices.push(currentPrice + variation);
+  }
 
-.stats {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 30px;
-}
+  prices[prices.length - 1] = currentPrice;
 
-.stat-box {
-  background: #1e293b;
-  padding: 20px;
-  border-radius: 14px;
-  width: 30%;
-  text-align: center;
-}
+  const highestPrice = Math.max(...prices);
+  const lowestPrice = Math.min(...prices);
 
-.stat-box p {
-  opacity: 0.6;
-}
+  const highestIndex = prices.indexOf(highestPrice);
+  const lowestIndex = prices.indexOf(lowestPrice);
 
-.stat-box h3 {
-  margin-top: 8px;
-  font-size: 1.5rem;
-}
+  document.getElementById("currentPrice").innerText = currentPrice;
+  document.getElementById("lowestPrice").innerText = lowestPrice;
+  document.getElementById("highestPrice").innerText = highestPrice;
 
-.stat-box small {
-  display: block;
-  margin-top: 6px;
-  opacity: 0.6;
-  font-size: 0.8rem;
-}
+  document.getElementById("currentDate").innerText =
+    "As of " + dates[dates.length - 1];
 
-.chart-container {
-  background: #1e293b;
-  padding: 25px;
-  border-radius: 16px;
-}
+  document.getElementById("lowestDate").innerText =
+    "On " + dates[lowestIndex];
 
-.hidden {
-  display: none;
+  document.getElementById("highestDate").innerText =
+    "On " + dates[highestIndex];
+
+  document.getElementById("dashboardSection").classList.remove("hidden");
+
+  if (chart) chart.destroy();
+
+  chart = new Chart(document.getElementById("priceChart"), {
+    type: "line",
+    data: {
+      labels: dates,
+      datasets: [{
+        label: "Price Trend (Last 7 Days)",
+        data: prices,
+        borderColor: "#6366f1",
+        backgroundColor: "rgba(99,102,241,0.2)",
+        tension: 0.4,
+        fill: true
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { labels: { color: "white" } }
+      },
+      scales: {
+        x: { ticks: { color: "white" } },
+        y: { ticks: { color: "white" } }
+      }
+    }
+  });
+
+  document.getElementById("previewSection")
+    .scrollIntoView({ behavior: "smooth" });
 }
